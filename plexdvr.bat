@@ -1,21 +1,14 @@
 SET infile=%1
 SET tmpfile=%1.mp4
 SET scriptlog=[full path to log file]
-SET handbrakepath=[full path to handbrakecli]
-SET handbrakepresetpath=[full path to handbrake preset json file]
 
 ECHO.
 ECHO Starting processing %date% %time%>> %scriptlog%
-ECHO Starting handbrake transcode %date% %time%>> %scriptlog%
 
-REM use handbrake to compress the ts into an mp4
-%handbrakepath% --preset-import-file %handbrakepresetpath% -Z "PlexDVR" -i %infile% -o %tmpfile%
-
-ECHO Finished transcode %date% %time%>> %scriptlog%
 ECHO Starting ffmpeg file conversion %date% %time%>> %scriptlog%
 
-REM use ffmpeg to convert the mp4 back into a ts
-ffmpeg -hwaccel cuda -hwaccel_output_format cuda -i %tmpfile% -f mpegts -c:v hevc_nvenc -preset slow -y %tmpfile%
+REM use ffmpeg to convert the ts back into a HEVC ts
+ffmpeg -hwaccel cuda -hwaccel_output_format cuda -i %infile% -f mpegts -c:v hevc_nvenc -preset slow -y %tmpfile%
 
 ECHO Finished conversion %date% %time%>> %scriptlog%
 ECHO Moving file %tmpfile% to %infile%>> %scriptlog%
