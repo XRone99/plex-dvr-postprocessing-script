@@ -15,7 +15,7 @@ ECHO Finished transcode %date% %time%>> %scriptlog%
 ECHO Starting ffmpeg file conversion %date% %time%>> %scriptlog%
 
 REM use ffmpeg to convert the mp4 back into a ts
-ffmpeg -i %tmpfile% -f mpegts -vcodec copy -acodec copy -y %tmpfile%
+ffmpeg -hwaccel cuda -hwaccel_output_format cuda -i %tmpfile% -f mpegts -c:v hevc_nvenc -preset slow -y %tmpfile%
 
 ECHO Finished conversion %date% %time%>> %scriptlog%
 ECHO Moving file %tmpfile% to %infile%>> %scriptlog%
